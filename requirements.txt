@@ -1,0 +1,33 @@
+# Core testing framework
+pytest==7.4.4
+pytest-asyncio==0.23.2
+pytest-html==4.1.1
+pytest-xdist==3.5.0
+pytest-rerunfailures==12.0
+
+# Playwright for browser automation and API testing
+playwright==1.40.0
+
+# Allure reporting
+allure-pytest==2.13.2
+
+# Code quality and formatting
+black==23.12.1
+flake8==7.0.0
+mypy==1.8.0
+
+# Configuration and environment management
+python-dotenv==1.0.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# Data handling and utilities
+requests==2.31.0
+faker==22.2.0
+
+# Coverage reporting
+pytest-cov==4.0.0
+
+# Additional utilities
+colorlog==6.8.0
+jsonschema==4.20.0 
