@@ -38,12 +38,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     )
 
 
-@pytest.fixture(scope="session")
-def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
-    """Create an instance of the default event loop for the test session."""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+# Event loop is handled by pytest-asyncio automatically
 
 
 @pytest.fixture(scope="session")
@@ -220,6 +215,8 @@ def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line("markers", "accessibility: marks tests as accessibility tests")
     config.addinivalue_line("markers", "critical: marks tests as critical functionality")
     config.addinivalue_line("markers", "slow: marks tests as slow running")
+    config.addinivalue_line("markers", "simple: marks tests as simple verification tests")
+    config.addinivalue_line("markers", "basic: marks tests as basic functionality tests")
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -231,15 +228,21 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo) -> Gener
 
 
 @pytest_asyncio.fixture(autouse=True)
-async def handle_test_failure(request: pytest.FixtureRequest, page: Page):
+async def handle_test_failure(request: pytest.FixtureRequest):
     """Handle test failures by taking screenshots."""
     yield
     
+    # Only handle failures for UI tests that have page fixture
     if hasattr(request.node, "rep_call") and request.node.rep_call.failed:
-        # Take screenshot on failure
-        screenshot_path = f"test-results/screenshots/{request.node.name}.png"
-        await page.screenshot(path=screenshot_path)
-        logger.error(f"Test failed. Screenshot saved: {screenshot_path}")
+        # Check if this is a UI test by looking for page fixture
+        if "page" in request.fixturenames:
+            page = request.getfixturevalue("page")
+            # Take screenshot on failure
+            screenshot_path = f"test-results/screenshots/{request.node.name}.png"
+            await page.screenshot(path=screenshot_path)
+            logger.error(f"Test failed. Screenshot saved: {screenshot_path}")
+        else:
+            logger.error(f"Test failed: {request.node.name}")
 
 
 # Custom markers for parametrization

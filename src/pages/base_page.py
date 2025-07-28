@@ -1,6 +1,6 @@
 """Base page class for Page Object Model implementation."""
 
-from typing import Any, Optional
+from typing import Any, Optional, Union
 from playwright.async_api import Page, Locator, expect
 from src.config import get_settings
 from src.utils import get_logger
@@ -48,7 +48,7 @@ class BasePage:
         """
         return self.page.url
         
-    async def click_element(self, locator: str | Locator) -> None:
+    async def click_element(self, locator: Union[str, Locator]) -> None:
         """Click an element.
         
         Args:
@@ -58,7 +58,7 @@ class BasePage:
         await element.click()
         self.logger.info(f"Clicked element: {locator}")
         
-    async def fill_input(self, locator: str | Locator, text: str) -> None:
+    async def fill_input(self, locator: Union[str, Locator], text: str) -> None:
         """Fill input field with text.
         
         Args:
@@ -69,7 +69,7 @@ class BasePage:
         await element.fill(text)
         self.logger.info(f"Filled input {locator} with: {text}")
         
-    async def get_text(self, locator: str | Locator) -> str:
+    async def get_text(self, locator: Union[str, Locator]) -> str:
         """Get text content of an element.
         
         Args:
@@ -81,7 +81,7 @@ class BasePage:
         element = self.page.locator(locator) if isinstance(locator, str) else locator
         return await element.text_content() or ""
         
-    async def is_visible(self, locator: str | Locator) -> bool:
+    async def is_visible(self, locator: Union[str, Locator]) -> bool:
         """Check if element is visible.
         
         Args:
@@ -93,7 +93,7 @@ class BasePage:
         element = self.page.locator(locator) if isinstance(locator, str) else locator
         return await element.is_visible()
         
-    async def wait_for_element(self, locator: str | Locator, timeout: Optional[int] = None) -> None:
+    async def wait_for_element(self, locator: Union[str, Locator], timeout: Optional[int] = None) -> None:
         """Wait for element to be visible.
         
         Args:
@@ -104,7 +104,7 @@ class BasePage:
         element = self.page.locator(locator) if isinstance(locator, str) else locator
         await element.wait_for(state="visible", timeout=timeout)
         
-    async def expect_element_visible(self, locator: str | Locator) -> None:
+    async def expect_element_visible(self, locator: Union[str, Locator]) -> None:
         """Assert that element is visible.
         
         Args:
@@ -113,7 +113,7 @@ class BasePage:
         element = self.page.locator(locator) if isinstance(locator, str) else locator
         await expect(element).to_be_visible()
         
-    async def expect_text_content(self, locator: str | Locator, expected_text: str) -> None:
+    async def expect_text_content(self, locator: Union[str, Locator], expected_text: str) -> None:
         """Assert element contains expected text.
         
         Args:

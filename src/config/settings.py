@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     debug: bool = Field(default=False, description="Debug mode")
     
     # OpenWeatherMap API settings
-    openweather_api_key: str = Field(..., description="OpenWeatherMap API key")
+    openweather_api_key: Optional[str] = Field(default=None, description="OpenWeatherMap API key")
     openweather_base_url: str = Field(
         default="https://api.openweathermap.org/data/2.5",
         description="OpenWeatherMap API base URL"
